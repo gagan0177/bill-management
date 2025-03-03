@@ -108,6 +108,24 @@ const BillGenerator = () => {
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
       pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+      // Calculate the grand total
+      const grandTotal = customer.products.reduce(
+        (sum, product) => sum + product.total,
+        0
+      );
+      const formattedTotal = grandTotal.toFixed(2); // Ensures 2 decimal places
+
+      // Set font to bold and increase size
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(12);
+
+      // Add a line for separation
+      pdf.line(10, imgHeight + 10, 200, imgHeight + 10); // Draw a line
+
+      // Add the grand total with rupee sign in bold
+      pdf.text(`Grand Total: ${formattedTotal}`, 140, imgHeight + 20, {
+        align: "right",
+      });
       pdf.save("TestInvoice.pdf");
     } catch (error) {
       alert("Failed to generate invoice. Please try again.");
@@ -335,8 +353,8 @@ const BillGenerator = () => {
               <tr key={index} className="text-center">
                 <td className="border p-2">{product.name}</td>
                 <td className="border p-2">{product.quantity}</td>
-                <td className="border p-2">${product.price}</td>
-                <td className="border p-2">${product.total}</td>
+                <td className="border p-2">₹ {product.price}</td>
+                <td className="border p-2">₹ {product.total}</td>
               </tr>
             ))}
           </tbody>
